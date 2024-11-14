@@ -1,11 +1,18 @@
-import React from 'react'
+import React from 'react';
+
+import RightSidebar from './RightSidebar';
+import { Feed } from './feed';
+
 
 const Home = () => {
   return (
-    <div>
-      
+    <div className="flex">
+      <div className='flex-group'>
+        <Feed/>
+      </div>
+      <RightSidebar/>
     </div>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;

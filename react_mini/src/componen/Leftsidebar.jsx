@@ -2,6 +2,9 @@ import React from 'react'
 import { FiGlobe, FiHeart, FiHome, FiLogOut, FiMessageCircle, FiPlusSquare, FiSearch, FiVideo } from "react-icons/fi";
 import { Avatar, AvatarImage, AvatarFallback } from './ui/avatar';
 import { Await, useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import axios from 'axios';
 
 const sidebarItems = [
   { icon: <FiHome />, text: "Home" },
@@ -13,7 +16,7 @@ const sidebarItems = [
   { icon: <FiPlusSquare />, text: "Create" },
   {
     icon: (
-      <Avatar w-6 h-6>
+      <Avatar className= "w-6 h-6">
         <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
         <AvatarFallback>CN</AvatarFallback>
       </Avatar>
@@ -23,28 +26,29 @@ const sidebarItems = [
 ]
 
 const Leftsidebar = () => {
-  // const navigate=useNavigate();
+  const navigate=useNavigate();
 
-  // const logoutHandler= asynch () => {
-  //   try {
-  //     const res= await axios.get("https");
-  //     if(res.data.success){
-  //       navigate("/login");
-  //       toast.success(res.data.message);
-
-  //     }
-  //   } catch (error) {
-  //      Toast.error(error.response.data.message);
-  //   }
-
-  // }
+  const logoutHandler = () => {
+    try {
+      // Clear user data or token from localStorage or sessionStorage
+      localStorage.removeItem('authToken');  // Example: Remove token
+      localStorage.removeItem('user');       // Remove user data if any
+  
+      // Navigate to login or home page
+      navigate("/login");
+      toast.success("Logged out successfully!");
+    } catch (error) {
+      toast.error("An error occurred during logout.");
+      console.error("Logout error:", error);
+    }
+  };
   const sideHandler=(textType)=>{
-    alert(textType);
+    if(textType=='Logout') logoutHandler();
   }
   return (
     <div className='fixed top-0 z-10 left-0 px-4 border-r border-gray-100 w-[16%] h-screen'>
       <div className='flex flex-col'>
-        <h1>LOGO</h1>
+        <h1 className='my-8 pl-3 font-bold text-xl'>GatherLink</h1>
         <div>
           {
             sidebarItems.map((item, index) => {
