@@ -6,8 +6,8 @@ import { Feed } from './feed';
 
 const Home = () => {
   return (
-    <div className="flex">
-      <div className='flex-group'>
+    <div className="flex w-64 bg-gray-200min-h-screen">
+      <div className='flex-1 my-60 overflow-auto'>
         <Feed/>
       </div>
       <RightSidebar/>

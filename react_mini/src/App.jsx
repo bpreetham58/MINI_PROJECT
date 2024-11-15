@@ -7,6 +7,7 @@ console.warn = (...args) => {
 };
 
 import React from "react";
+import './index.css';
 import Signup from './componen/Signup';
 import {createBrowserRouter,RouterProvider}from 'react-router-dom';
 import Login from "./componen/Login";
@@ -56,6 +57,7 @@ function App() {
     <div>
       <RouterProvider router={browserRouter}/>
     </div>
+    
     
   );
 }

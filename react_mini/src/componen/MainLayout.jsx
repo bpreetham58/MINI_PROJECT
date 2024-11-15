@@ -1,17 +1,22 @@
-import React from 'react'
-// import { Outlet } from 'react-router-dom';
-import Leftsidebar from './Leftsidebar';
+import React from 'react';
+import LeftSidebar from './LeftSidebar'; // Sidebar on the left
+import RightSidebar from './RightSidebar'; // Sidebar on the right
+import { Outlet } from 'react-router-dom';
 
-const MainLayout = ({ children }) => {
-  console.log('MainLayout rendered');
+const MainLayout = () => {
   return (
-    <div className="main-layout">
-      <Leftsidebar />
-      <div className="content">
-        {children}
+    <div className="flex min-h-screen">
+      {/* Left Sidebar */}
+      <div className="w-64 pl-4 bg-[#a5c9e9] text-[#112D4E]  p-2">
+        <LeftSidebar />
+      </div>
+
+      {/* Main content area (Posts in the middle) */}
+      <div className="flex-1 my-60 overflow-auto">
+        <Outlet /> {/* This will render the current route content */}
       </div>
     </div>
   );
 };
 
-export default MainLayout
+export default MainLayout;
