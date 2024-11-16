@@ -28,15 +28,15 @@ const Signup = () => {
   }
   return (
     <div className="flex items-center w-screen h-screen justify-center">
-      <form onSubmit={signupHandler}className="shadow -lg flex flex-col gap-5 p-8"> 
+      <form onSubmit={signupHandler}className="shadow -lg bg-[#CBDCEB] flex flex-col gap-5 p-8"> 
         <div className="my-4">
-          <h1 className="text-center font-bold text-xl">
-            LOGO
+          <h1 className="text-center w-60 text-[#133E87] font-bold text-xl">
+            GatherLink
           </h1>
-          <p className="text -sm text-center">Signup to see photos and videos</p>
+          <p className="text -sm text-center text-[#264653]">Where Clubs Gather</p>
         </div>
         <div>
-          <span className="font-medium">Username</span>
+          <span className="font-medium text-[#112D4E]">Username</span>
           <Input
           type="text"
           name="username"
@@ -46,7 +46,7 @@ const Signup = () => {
           />
         </div>
         <div>
-          <span className="font-medium">Email</span>
+          <span className="font-medium text-[#112D4E]">Email</span>
           <Input
           type="email"
           name="email"
@@ -56,7 +56,7 @@ const Signup = () => {
           />
         </div>
         <div>
-          <span className="font-medium">Password</span>
+          <span className="font-medium text-[#112D4E]">Password</span>
           <Input
           type="password"
           name="password"
@@ -72,10 +72,10 @@ const Signup = () => {
               Please wait
             </Button>
           ): (
-            <Button type="submit">Signup</Button>
+            <Button type="submit" >Signup</Button>
           )
         }
-        <span className="text-center">Already have an account?<Link to="/login"className="text-blue-600">Login</Link></span>
+        <span className="text-center text-[#112D4E]">Already have an account?<Link to="/login"className="text-[#3FA2F6]">Login</Link></span>
 
 
       </form>
