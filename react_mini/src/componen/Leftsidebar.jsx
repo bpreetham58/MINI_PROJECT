@@ -1,40 +1,26 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { FiGlobe, FiHeart, FiHome, FiLogOut, FiMessageCircle, FiPlusSquare, FiSearch, FiVideo } from "react-icons/fi";
 import { Avatar, AvatarImage, AvatarFallback } from './ui/avatar';
 import { Await, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
-
-const sidebarItems = [
-  { icon: <FiHome />, text: "Home" },
-  { icon: <FiSearch />, text: "Search" },
-  { icon: <FiGlobe />, text: "Explore" },
-  { icon: <FiMessageCircle />, text: "Messages" },
-  { icon: <FiVideo />, text: "Reels" },
-  { icon: <FiHeart />, text: "Notifications" },
-  { icon: <FiPlusSquare />, text: "Create" },
-  {
-    icon: (
-      <Avatar className= "w-6 h-6">
-        <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-        <AvatarFallback>CN</AvatarFallback>
-      </Avatar>
-    ), text: "Profile"
-  },
-  { icon: <FiLogOut />, text: "Logout" },
-]
+import { useDispatch, useSelector } from 'react-redux';
+import store from '../redux/store';
+import { setAuthUser } from '../redux/authSlice';
+import CreatePost from './CreatePost';
 
 const Leftsidebar = () => {
   const navigate=useNavigate();
+  const {user}= useSelector(store=>store.auth);
+  const dispatch = useDispatch();
+  const [open,setOpen]=useState(false);
 
   const logoutHandler = () => {
     try {
-      // Clear user data or token from localStorage or sessionStorage
-      localStorage.removeItem('authToken');  // Example: Remove token
-      localStorage.removeItem('user');       // Remove user data if any
-  
-      // Navigate to login or home page
+      localStorage.removeItem('authToken'); 
+      localStorage.removeItem('user');       
+      dispatch(setAuthUser(null));
       navigate("/login");
       toast.success("Logged out successfully!");
     } catch (error) {
@@ -42,9 +28,38 @@ const Leftsidebar = () => {
       console.error("Logout error:", error);
     }
   };
-  const sideHandler=(textType)=>{
-    if(textType=='Logout') logoutHandler();
+
+  const createPostHandler=()=>{
+    setOpen(true);
   }
+  const sideHandler=(textType)=>{
+    if(textType==='Logout') {logoutHandler();
+    }
+    else if(textType ===  "Create"){
+      setOpen(true);
+
+    }
+  }
+
+
+  const sidebarItems = [
+    { icon: <FiHome />, text: "Home" },
+    { icon: <FiSearch />, text: "Search" },
+    { icon: <FiGlobe />, text: "Explore" },
+    { icon: <FiMessageCircle />, text: "Messages" },
+    { icon: <FiVideo />, text: "Reels" },
+    { icon: <FiHeart />, text: "Notifications" },
+    { icon: <FiPlusSquare />, text: "Create" },
+    {
+      icon: (
+        <Avatar className= "w-6 h-6">
+          <AvatarImage src="user?.profilePicture" alt="@shadcn" />
+          <AvatarFallback>CN</AvatarFallback>
+        </Avatar>
+      ), text: "Profile"
+    },
+    { icon: <FiLogOut />, text: "Logout" },
+  ]
   return (
     <div className='fixed top-0 z-10 left-0 px-8 border-r border-gray-100 w-[18%] h-screen'>
       <div className='flex flex-col'>
@@ -62,7 +77,7 @@ const Leftsidebar = () => {
           }
         </div>
       </div>
-
+          <CreatePost open={open} setOpen={setOpen}/>
     </div>
 
   )
