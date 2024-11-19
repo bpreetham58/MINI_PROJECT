@@ -50,7 +50,7 @@ const CreatePost = ({ open, setOpen }) => {
                 {
                     imagePreview &&(
                         <div className='w-full h-64 flex item-center justfy-center'>
-                            <img src={imagePreview} alt="preview_img"/>
+                            <img src={imagePreview} alt="preview_img" className='object-cover h-full w-full rounded-md'/>
                         </div>
                     )
                 }
