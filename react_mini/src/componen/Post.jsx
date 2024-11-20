@@ -12,7 +12,7 @@ import {
 import { FiBookmark, FiHeart, FiMessageCircle, FiMoreHorizontal, FiSend } from 'react-icons/fi'
 import CommentDialog from './CommentDialog'
 
-const Post = () => {
+const Post = ({post}) => {
     const [text, setText] = useState("");
     const [open,setOpen] = useState(false);
     
@@ -48,7 +48,7 @@ const Post = () => {
             </div>
             <img
                 className='rounded-sm my-2 w-full aspect-[3/2] object-cover'
-                src='https://images.unsplash.com/photo-1561489401-fc2876ced162?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' alt='post_image' />
+                src='https://images.unsplash.com/photo-1561489401-fc2876ced162?q=80&w=2070&auto=format&fit=crop&ixlib=-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' alt='post_image' />
 
             <div className='flex item-center justify-between my-2'>
                 <div className='flex item-center gap-3'>
