@@ -14,6 +14,7 @@ import Login from "./componen/Login";
 import MainLayout from "./componen/MainLayout";
 import Home from "./componen/Home";
 import Profile from "./componen/Profile";
+import CertificateGenerator from './componen/CertificateGenerator';
 
 const browserRouter=createBrowserRouter([
   {
@@ -27,7 +28,11 @@ const browserRouter=createBrowserRouter([
       {
         path:"/profile",
         element:<Profile/>
-      }
+      },
+      {
+        path: "/certificate",
+        element: <CertificateGenerator />, 
+      },
     ]
   },
   {

@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { FiGlobe, FiHeart, FiHome, FiLogOut, FiMessageCircle, FiPlusSquare, FiSearch, FiVideo } from "react-icons/fi";
 import { Avatar, AvatarImage, AvatarFallback } from './ui/avatar';
+import { PiCertificateFill } from "react-icons/pi";
 import { Await, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -9,6 +10,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import store from '../redux/store';
 import { setAuthUser } from '../redux/authSlice';
 import CreatePost from './CreatePost';
+import { Icon, icons } from 'lucide-react';
+
+
 
 const Leftsidebar = () => {
   const navigate=useNavigate();
@@ -37,8 +41,10 @@ const Leftsidebar = () => {
     }
     else if(textType ===  "Create"){
       setOpen(true);
-
+    }else if (textType === "Certificate") {
+      navigate('/certificate'); 
     }
+
   }
 
 
@@ -50,6 +56,7 @@ const Leftsidebar = () => {
     { icon: <FiVideo />, text: "Reels" },
     { icon: <FiHeart />, text: "Notifications" },
     { icon: <FiPlusSquare />, text: "Create" },
+    {icon:<PiCertificateFill/>,text:"Certificate"},
     {
       icon: (
         <Avatar className= "w-6 h-6">
@@ -63,7 +70,7 @@ const Leftsidebar = () => {
   return (
     <div className='fixed top-0 z-10 left-0 px-8 border-r border-gray-100 w-[18%] h-screen'>
       <div className='flex flex-col'>
-        <h1 className='my-8 pl-3 font-bold text-xl'>GatherLink</h1>
+        <h1 className='my-1 pl-2 font-bold text-xl'>GatherLink</h1>
         <div>
           {
             sidebarItems.map((item, index) => {
