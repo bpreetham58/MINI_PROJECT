@@ -8,6 +8,18 @@ import { FiMoreHorizontal } from "react-icons/fi";
 const CommentDialog = ({ open, setOpen, onCommentSubmit }) => {
   const [text, setText] = useState("");
 
+  const changeEventHandler = (e) =>{
+    const inputText = e.target.value;
+    if(inputText.trim()){
+      setText(inputText);
+    }else{
+      setText("");
+    }
+  }
+
+  const sendMessageHandler = async () =>{
+    alert(text);
+  }
   const handleChange = (e) => {
     setComment(e.target.value);
   }
@@ -24,7 +36,8 @@ const CommentDialog = ({ open, setOpen, onCommentSubmit }) => {
   };
 
   const handleSubmitComment = () => {
-    if (comment.trim() !== "") {
+    const inputText = e.target.value;
+    if (inputText.trim() !== "") {
       onCommentSubmit(comment);
       setComment("");
     }
@@ -105,15 +118,15 @@ const CommentDialog = ({ open, setOpen, onCommentSubmit }) => {
                 <input
                   type="text"
                   placeholder="Add a comment..."
-                  value={comment}
-                  onChange={handleChange}
+                  value={text}
+                  onChange={changeEventHandler}
                   className="w-full outline-none border border-gray-300 p-2 rounded bg-[#DBE2EF] text-[#112D4E] placeholder-[#112D4E]"
                 />
 
                 <button
                   variant='outline'
-                  disabled={comment.trim() === ""}
-                  onClick={handleSubmitComment}
+                  disabled={!text.trim()}
+                  onClick={sendMessageHandler}
                   className="bg-[#3F72AF] size-sm hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-2"
                 >
                   Send

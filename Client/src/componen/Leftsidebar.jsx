@@ -12,7 +12,12 @@ import { setAuthUser } from '../redux/authSlice';
 import CreatePost from './CreatePost';
 import { Icon, icons } from 'lucide-react';
 
-
+const ForwardedAvatar = React.forwardRef(({ src, alt }, ref) => (
+  <Avatar ref={ref} className="w-6 h-6">
+    <AvatarImage src={src} alt={alt} />
+    <AvatarFallback>CN</AvatarFallback>
+  </Avatar>
+));
 
 const Leftsidebar = () => {
   const navigate=useNavigate();
@@ -20,16 +25,16 @@ const Leftsidebar = () => {
   const dispatch = useDispatch();
   const [open,setOpen]=useState(false);
 
-  const logoutHandler = () => {
+  const logoutHandler = async () => {
     try {
-      localStorage.removeItem('authToken'); 
-      localStorage.removeItem('user');       
-      dispatch(setAuthUser(null));
-      navigate("/login");
-      toast.success("Logged out successfully!");
+      const res = await axios.get('http://localhost:8000/api/v1/user/logout',{withCredentials:true})
+      if(res.data.success){
+        dispatch(setAuthUser(null))
+        navigate("/login");
+        toast.success(res.data.message);
+      }
     } catch (error) {
-      toast.error("An error occurred during logout.");
-      console.error("Logout error:", error);
+      toast.error(error.response.data.message);
     }
   };
 
@@ -58,12 +63,8 @@ const Leftsidebar = () => {
     { icon: <FiPlusSquare />, text: "Create" },
     {icon:<PiCertificateFill/>,text:"Certificate"},
     {
-      icon: (
-        <Avatar className= "w-6 h-6">
-          <AvatarImage src="user?.profilePicture" alt="@shadcn" />
-          <AvatarFallback>CN</AvatarFallback>
-        </Avatar>
-      ), text: "Profile"
+      icon: <ForwardedAvatar src={user?.ProfilePicture || 'path_to_default_image'} alt={user?.name || 'User'} />,
+      text: "Profile"
     },
     { icon: <FiLogOut />, text: "Logout" },
   ]

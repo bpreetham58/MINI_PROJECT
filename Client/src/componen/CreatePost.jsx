@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Dialog, DialogContent, DialogHeader } from './ui/dialog';
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from './ui/dialog';
 import { Avatar } from '@radix-ui/react-avatar';
 import { AvatarFallback, AvatarImage } from './ui/avatar';
 import Button from './ui/button';
@@ -41,8 +41,8 @@ const CreatePost = ({ open, setOpen }) => {
             const res = await axios.post('http://localhost:8000/api/v1/post/addpost', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
-                }
-                // withCredentials: true,
+                },
+                withCredentials: true,
             });
 
             if (res.data.success) {
@@ -65,9 +65,14 @@ const CreatePost = ({ open, setOpen }) => {
                 onInteractOutside={() => setOpen(false)}
                 className="bg-white"
             >
-                <DialogHeader className="text-center font-semibold">
+                {/* Add DialogTitle and DialogDescription */}
+                <DialogTitle className="text-center font-semibold">
                     Create New Post
-                </DialogHeader>
+                </DialogTitle>
+                <DialogDescription className="text-center text-gray-500 text-sm">
+                    Share your thoughts and images with the community.
+                </DialogDescription>
+
                 <div className="flex gap-3 items-center">
                     <Avatar>
                         <AvatarImage src="" alt="img" />

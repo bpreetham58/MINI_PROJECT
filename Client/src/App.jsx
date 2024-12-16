@@ -15,6 +15,8 @@ import MainLayout from "./componen/MainLayout";
 import Home from "./componen/Home";
 import Profile from "./componen/Profile";
 import CertificateGenerator from './componen/CertificateGenerator';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'; 
 
 const browserRouter=createBrowserRouter([
   {
@@ -60,6 +62,7 @@ const browserRouter=createBrowserRouter([
 function App() {
   return (
     <div>
+       <ToastContainer /> 
       <RouterProvider router={browserRouter}/>
     </div>
     

@@ -3,8 +3,6 @@ import Post from './Post';
 import { useSelector } from 'react-redux'
 
 const Posts = () => {
-  
-
   return (
     <div>
       {

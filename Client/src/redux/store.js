@@ -14,7 +14,6 @@ import {
 import storage from 'redux-persist/lib/storage'
 
 
-
 const persistConfig = {
     key: 'root',
     version: 1,
@@ -39,4 +38,5 @@ const store = configureStore({
         traceLimit: 25,
     },
 });
+
 export default store;

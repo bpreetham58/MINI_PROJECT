@@ -6,19 +6,20 @@ import { setAuthUser } from "../redux/authSlice";
 import { toast } from "sonner";
 import { useDispatch } from "react-redux";
 import axios from "axios";
+import { Loader2 } from "lucide-react";
 
-const mockUsers = [
-  {
-    email: "sahana@gmail.com",
-    password: "password123",
-    name: "User One"
-  },
-  {
-    email: "preetham@gmail.com",
-    password: "password456",
-    name: "User Two"
-  }
-];
+// const mockUsers = [
+//   {
+//     email: "sahana@gmail.com",
+//     password: "password123",
+//     name: "User One"
+//   },
+//   {
+//     email: "preetham@gmail.com",
+//     password: "password456",
+//     name: "User Two"
+//   }
+// ];
 
 const Login = () => {
   const [input, setInput] = useState({
@@ -41,26 +42,31 @@ const Login = () => {
     e.preventDefault();
     console.log(input);
     try {
-      // Simulate API login logic with mock data
-      const user = mockUsers.find(
-        (u) => u.email === input.email && u.password === input.password
-      );
-
-      if (user) {
-        dispatch(setAuthUser({ email: user.email, name: user.name }));
+      setLoading(true);
+      const res = await axios.post('http://localhost:8000/api/v1/user/login', input, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        withCredentials: true,
+      });
+  
+      if (res.data.success) {
+        dispatch(setAuthUser(res.data.user));
         navigate("/");
-        toast.success("Login successful");
-        setInput({ email: "", password: "" });
-      } else {
-        throw new Error("Invalid email or password");
+        toast.success(res.data.message);
+        setInput({
+          email:"",
+          password:""
+        })
       }
     } catch (error) {
-      console.error(error);
-      toast.error(error.message || "An error occurred");
+      console.log(error);
+        toast.error(error.response.data.message);
     } finally {
       setLoading(false);
     }
   };
+
   return (
     <div className="flex items-center w-screen h-screen justify-center">
       <form onSubmit={signupHandler} className="shadow -lg bg-[#CBDCEB] flex flex-col gap-5 p-8">
@@ -90,10 +96,17 @@ const Login = () => {
             className="focus-visible:ring-transparent my-2"
           />
         </div>
-
-        <Button type="submit">Login</Button>
+        {
+          loading?(
+            <Button>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin"/>
+              Please Wait
+            </Button>
+          ):(
+            <Button type="submit">Login</Button>
+          )
+        }
         <span className="text-center text-[#112D4E]">Already have an account?<Link to="/signup" className="text-[#3FA2F6]">Signup</Link></span>
-
 
       </form>
     </div>

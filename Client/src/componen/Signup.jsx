@@ -1,8 +1,11 @@
 import React, { useState } from "react";
+import axios from 'axios';
 import { Input } from "./ui/input";
 import Button from "./ui/button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaSpinner } from 'react-icons/fa';
+import { toast } from "react-toastify";
+import { Loader2 } from "lucide-react";
 
 
 const Signup = () => {
@@ -12,20 +15,39 @@ const Signup = () => {
     password:""
   });
   const [loading,setLoading]=useState(false);
+  const navigate = useNavigate();
   const changeEventHandler =(e) =>{
     setInput({...input,[e.target.name]:e.target.value});
   }
-  const signupHandler = async (e) =>{
+  const signupHandler = async (e) => {
     e.preventDefault();
     console.log(input);
     try {
       setLoading(true);
+      const res = await axios.post('http://localhost:8000/api/v1/user/register', input, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        withCredentials: true,
+      });
+  
+      if (res.data.success) {
+        navigate("/login");
+        toast.success(response.data.message);
+        setInput({
+          username:"",
+          email:"",
+          password:""
+        })
+      }
     } catch (error) {
       console.log(error);
-    }finally{
+        toast.error(error.response.data.message);
+    } finally {
       setLoading(false);
     }
-  }
+  };
+
   return (
     <div className="flex items-center w-screen h-screen justify-center">
       <form onSubmit={signupHandler}className="shadow -lg bg-[#CBDCEB] flex flex-col gap-5 p-8"> 
@@ -66,13 +88,13 @@ const Signup = () => {
           />
         </div>
         {
-          loading ? (
+          loading?(
             <Button>
-              <FaSpinner className="mr-2 h-4 2-4 animate-spin"/>
-              Please wait
+              <Loader2 className="mr-2 h-4 w-4 animate-spin"/>
+              Please Wait
             </Button>
-          ): (
-            <Button type="submit" >Signup</Button>
+          ):(
+            <Button type="submit">Signup</Button>
           )
         }
         <span className="text-center text-[#112D4E]">Already have an account?<Link to="/login"className="text-[#3FA2F6]">Login</Link></span>
