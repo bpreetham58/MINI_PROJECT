@@ -1,6 +1,7 @@
 import sharp from "sharp";
 import { Post } from "../models/post.model.js";
 import { User } from "../models/user.model.js";
+import { Comment } from "../models/comment.model.js";
 export const addNewPost = async (req, res) => {
     try {
         const { caption } = req.body;
@@ -219,7 +220,7 @@ export const bookmarkPost = async (req, res) => {
             //bookmarking
             await user.updateOne({ $addToSet: { bookmarks: post._id } });
             await user.save();
-            return res.status(200).json({ type: 'saved', message: 'Post bookmark', success: true });
+            return res.status(200).json({ type: 'saved', message: 'Post bookmarked', success: true });
 
         }
     } catch (error) {
