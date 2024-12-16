@@ -1,48 +1,84 @@
+import cloudinary from 'cloudinary';
 import sharp from "sharp";
 import { Post } from "../models/post.model.js";
 import { User } from "../models/user.model.js";
 import { Comment } from "../models/comment.model.js";
+import dotenv from 'dotenv';
+
+// Initialize dotenv to access environment variables
+dotenv.config();
+
+// Configure Cloudinary
+cloudinary.config({
+    cloud_name: 'ddmzxnzla', // Your Cloud Name
+    api_key: '981682434249325', // Your API Key
+    api_secret: 'fohAAi27zgHsLXQpFhPUoDCqECM' // Your API Secret
+  
+});
 export const addNewPost = async (req, res) => {
     try {
         const { caption } = req.body;
         const image = req.file;
         const authorId = req.id;
 
-        if (!image) return res.status(400).json({ message: 'Image required' });
+        // Log the received data
+        console.log("Request Body:", req.body);
+        console.log("Uploaded File:", req.file);
+        console.log("Author ID:", authorId);
 
+        if (!image) {
+            console.log("No image provided");
+            return res.status(400).json({ message: 'Image required' });
+        }
+
+        // Optimize the image
         const optimizedImageBuffer = await sharp(image.buffer)
             .resize({ width: 800, height: 800, fit: 'inside' })
             .toFormat('jpeg', { quality: 80 })
             .toBuffer();
 
-        //Buffer to datauri
+        console.log("Optimized Image Buffer:", optimizedImageBuffer);
+
         const fileUri = `data:image/jpeg;base64,${optimizedImageBuffer.toString('base64')}`;
+        console.log("File URI:", fileUri);
+
+        // Upload to Cloudinary
         const cloudResponse = await cloudinary.uploader.upload(fileUri);
+        console.log("Cloudinary Response:", cloudResponse);
+
         const post = await Post.create({
             caption,
             image: cloudResponse.secure_url,
             author: authorId,
         });
+        console.log("Post Created:", post);
 
+        // Associate post with user
         const user = await User.findById(authorId);
         if (user) {
             user.posts.push(post._id);
             await user.save();
         }
 
+        // Populate author info and send response
         await post.populate({ path: 'author', select: '-password' });
 
         return res.status(201).json({
             message: 'New post added',
             post,
-            success: true()
-
-        })
+            success: true
+        });
 
     } catch (error) {
-        console.log(error)
+        console.error("Error in addNewPost:", error);
+        return res.status(500).json({
+            message: 'An error occurred while adding the post',
+            success: false,
+            error: error.message,
+        });
     }
-}
+};
+
 //displays feed on urself feed
 export const getAllPost = async (req, res) => {
     try {
