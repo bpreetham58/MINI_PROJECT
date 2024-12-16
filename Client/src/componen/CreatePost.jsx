@@ -41,8 +41,8 @@ const CreatePost = ({ open, setOpen }) => {
             const res = await axios.post('http://localhost:8000/api/v1/post/addpost', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
-                },
-                withCredentials: true,
+                }
+                // withCredentials: true,
             });
 
             if (res.data.success) {
