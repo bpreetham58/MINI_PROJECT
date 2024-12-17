@@ -7,6 +7,9 @@ import { readFileAsDataURL } from '../lib/util';
 import { Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import axios from 'axios'; // Ensure axios is imported
+import { setPosts } from '../redux/postSlice';
+import Posts from './Posts';
+import { useDispatch, useSelector } from 'react-redux';
 
 const CreatePost = ({ open, setOpen }) => {
     const imageRef = useRef();
@@ -14,6 +17,9 @@ const CreatePost = ({ open, setOpen }) => {
     const [caption, setCaption] = useState('');
     const [imagePreview, setImagePreview] = useState('');
     const [loading, setLoading] = useState(false);
+    const {user} = useSelector(store=>store.auth);
+    const {posts} = useSelector(store=>store.post);
+    const dispatch = useDispatch();
 
     // Handle file input change
     const fileChangeHandler = async (e) => {
@@ -46,6 +52,7 @@ const CreatePost = ({ open, setOpen }) => {
             });
 
             if (res.data.success) {
+                dispatch(setPosts([res.data.post, ...posts]))
                 toast.success(res.data.message);
                 setCaption('');
                 setImagePreview('');
@@ -75,11 +82,11 @@ const CreatePost = ({ open, setOpen }) => {
 
                 <div className="flex gap-3 items-center">
                     <Avatar>
-                        <AvatarImage src="" alt="img" />
+                        <AvatarImage src={user?.profilePicture}alt="img" />
                         <AvatarFallback>CN</AvatarFallback>
                     </Avatar>
                     <div>
-                        <h1 className="font-semibold text-xs">Username</h1>
+                        <h1 className="font-semibold text-xs">{user?.username}</h1>
                         <span className="text-gray-600 font-semibold text-xs">
                             Bio here...
                         </span>
