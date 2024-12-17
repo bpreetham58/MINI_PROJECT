@@ -82,14 +82,14 @@ export const addNewPost = async (req, res) => {
 //displays feed on urself feed
 export const getAllPost = async (req, res) => {
     try {
-        const post = await Post.find().sort({ createdAt: -1 })
-            .populate({ path: 'author', select: 'username,ProfilePicture' })
+        const posts = await Post.find().sort({ createdAt: -1 })
+            .populate({ path: 'author', select: 'username profilePicture' })
             .populate({
                 path: 'comments',
                 sort: { createdAt: -1 },
                 populate: {
                     path: 'author',
-                    select: 'username,ProfilePicture'
+                    select: 'username profilePicture'
                 }
             });
         return res.status(200).json({
@@ -106,13 +106,13 @@ export const getUserPost = async (req, res) => {
         const authorId = req.id;
         const posts = await Post.find({ author: authorId }).sort({ createdAt: -1 }).populate({
             path: 'author',
-            select: 'username,ProfilePicture'
+            select: 'username ProfilePicture'
         }).populate({
             path: 'comments',
             sort: { createdAt: -1 },
             populate: {
                 path: 'author',
-                select: 'username,ProfilePicture'
+                select: 'username ProfilePicture'
             }
         });
         return res.status(200).json({
