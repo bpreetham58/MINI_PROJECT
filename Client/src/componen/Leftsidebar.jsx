@@ -51,6 +51,8 @@ const Leftsidebar = () => {
       setOpen(true);
     }else if (textType === "Certificate") {
       navigate('/certificate'); 
+    }else if(textType === "Profile"){
+      navigate(`/profile/${user?._id}`);
     }
 
   }

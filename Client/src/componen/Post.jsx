@@ -14,7 +14,9 @@ import {
 import CommentDialog from './CommentDialog';
 import { setPosts, setSelectedPost } from '../redux/postSlice'; // Import the Redux action
 import { FaRegHeart, FaHeart } from 'react-icons/fa';
-//import { Badge } from './ui/Badge'
+import { Badge } from './ui/badge';
+
+
 
 
 
@@ -129,7 +131,10 @@ const Post = ({ post }) => {
                         <AvatarImage src={post.author?.profilePicture} alt="Profile" />
                         <AvatarFallback>{post.author?.username?.[0]?.toUpperCase() || 'U'}</AvatarFallback>
                     </Avatar>
+                    <div className='flex item-center gap-3'>
                     <h6>{post.author?.username || 'Unknown User'}</h6>
+                   {user._id === post.author._id &&<Badge variant="default">Author</Badge>}
+                    </div>
 
                 </div>
                 <Dialog>
