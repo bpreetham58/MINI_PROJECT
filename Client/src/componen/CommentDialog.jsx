@@ -1,30 +1,66 @@
 import { Avatar } from "@radix-ui/react-avatar";
 import { Dialog, DialogContent, DialogTrigger } from "@radix-ui/react-dialog";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Link } from "react-router-dom";
 import { FiMoreHorizontal } from "react-icons/fi";
+import { useDispatch, useSelector } from "react-redux";
+import Comment from "./Comment";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { setPosts } from "../redux/postSlice";
 
 const CommentDialog = ({ open, setOpen, onCommentSubmit }) => {
   const [text, setText] = useState("");
+  const { selectedPost, posts } = useSelector(store => store.post)
+  const [comment, setComment] = useState([]);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    if (selectedPost) {
+      setComment(selectedPost.comments);
+    }
+  }, [selectedPost]);
 
-  const changeEventHandler = (e) =>{
+  const changeEventHandler = (e) => {
     const inputText = e.target.value;
-    if(inputText.trim()){
+    if (inputText.trim()) {
       setText(inputText);
-    }else{
+    } else {
       setText("");
     }
   }
 
-  const sendMessageHandler = async () =>{
-    alert(text);
+  const sendMessageHandler = async () => {
+
+    try {
+      const res = await axios.post(`http://localhost:8000/api/v1/post/${selectedPost._id}/comment`, { text }, {
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        withCredentials: true
+      });
+
+      if (res.data.success) {
+        const updatedCommentData = [...comment, res.data.comment];
+        setComment(updatedCommentData);
+
+        const updatedPostData = posts.map(p =>
+          p._id === selectedPost._id ? { ...p, comments: updatedCommentData } : p
+        );
+
+        dispatch(setPosts(updatedPostData));
+        toast.success(res.data.message);
+        setText("");
+      }
+    } catch (error) {
+      console.log(error);
+    }
   }
+
   const handleChange = (e) => {
     setComment(e.target.value);
   }
 
-  const [comment, setComment] = useState("");
   const [moreDialogOpen, setMoreDialogOpen] = useState(false);
 
   const handleUnfollow = () => {
@@ -52,7 +88,7 @@ const CommentDialog = ({ open, setOpen, onCommentSubmit }) => {
         <div className="bg-white rounded-lg shadow-lg p-4 max-w-3xl w-full flex flex-row gap-4">
           <div className="flex-1">
             <img
-              src="https://images.unsplash.com/photo-1561489401-fc2876ced162?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+              src={selectedPost?.image}
               alt="post_image"
               className="w-full h-auto rounded"
             />
@@ -63,13 +99,13 @@ const CommentDialog = ({ open, setOpen, onCommentSubmit }) => {
               <div className="flex gap-3 items-center">
                 <Link className="text-[#3F72AF]">
                   <Avatar>
-                    <AvatarImage src="" />
+                    <AvatarImage src={selectedPost?.author?.profilePicture} />
                     <AvatarFallback>CN</AvatarFallback>
                   </Avatar>
                 </Link>
                 <div className="mt-4">
                   <Link className="text-[#3F72AF] font-semibold text-medium">
-                    Username
+                    {selectedPost?.author?.username}
                   </Link>
                 </div>
               </div>
@@ -106,11 +142,13 @@ const CommentDialog = ({ open, setOpen, onCommentSubmit }) => {
             </div>
 
             <hr />
-            <div className="flex-1 overflow-y-auto max-h-96 p-4">
-              <div className="mb-2">
-                <p>Comment 1</p>
-                <p>Comment 2</p>
-              </div>
+            <div className="flex-1 overflow-y-auto max-h-96 p-4 mb-2">
+              {
+                comment.map((comment) => <Comment key={comment._id} comment={comment} />)
+              }
+
+
+
             </div>
 
             <div className="p-4">
@@ -120,7 +158,7 @@ const CommentDialog = ({ open, setOpen, onCommentSubmit }) => {
                   placeholder="Add a comment..."
                   value={text}
                   onChange={changeEventHandler}
-                  className="w-full outline-none border border-gray-300 p-2 rounded bg-[#DBE2EF] text-[#112D4E] placeholder-[#112D4E]"
+                  className="w-full outline-none border border-gray-300 p-2 rounded bg-[#DBE2EF] text-sm placeholder-[#112D4E]"
                 />
 
                 <button
@@ -141,3 +179,4 @@ const CommentDialog = ({ open, setOpen, onCommentSubmit }) => {
 };
 
 export default CommentDialog;
+

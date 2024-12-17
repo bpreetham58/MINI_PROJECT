@@ -11,6 +11,7 @@ import store from '../redux/store';
 import { setAuthUser } from '../redux/authSlice';
 import CreatePost from './CreatePost';
 import { Icon, icons } from 'lucide-react';
+import { setPosts, setSelectedPost } from '../redux/postSlice';
 
 const ForwardedAvatar = React.forwardRef(({ src, alt }, ref) => (
   <Avatar ref={ref} className="w-6 h-6">
@@ -29,7 +30,9 @@ const Leftsidebar = () => {
     try {
       const res = await axios.get('http://localhost:8000/api/v1/user/logout',{withCredentials:true})
       if(res.data.success){
-        dispatch(setAuthUser(null))
+        dispatch(setAuthUser(null));
+        dispatch(setSelectedPost(null));
+        dispatch(setPosts([]));
         navigate("/login");
         toast.success(res.data.message);
       }

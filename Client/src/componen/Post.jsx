@@ -1,110 +1,3 @@
-// import { Avatar } from '@radix-ui/react-avatar';
-// import React, { useState, forwardRef } from 'react';
-// import { AvatarFallback, AvatarImage } from './ui/avatar';
-// import { MoreHorizontal } from 'lucide-react';
-// import {
-//     Dialog,
-//     DialogContent,
-//     DialogTrigger,
-// } from "./ui/dialog";
-// import { FiBookmark, FiHeart, FiMessageCircle, FiMoreHorizontal, FiSend } from 'react-icons/fi';
-// import CommentDialog from './CommentDialog';
-// import { useSelector } from 'react-redux';
-
-// // // Wrapper for icons to forward refs
-// // const ForwardRefIcon = forwardRef(({ Icon, ...props }, ref) => (
-// //     <span ref={ref} {...props}>
-// //         <Icon />
-// //     </span>
-// // ));
-
-// const Post = ({ post }) => {
-
-//     if (!post || !post._id) {
-//         console.error("Invalid post object:", post); // Log for debugging
-//         return null; // Render nothing if post is invalid
-//       }
-
-//     const [text, setText] = useState('');
-//     const [open, setOpen] = useState(false);
-//     const { user } = useSelector(store => store.auth);
-//     //const { posts } = useSelector(store => store.post);
-
-//     const changeEventHandler = (e) => {
-//         const inputText = e.target.value;
-//         setText(inputText.trim() ? inputText : '');
-//     };
-
-//     return (
-//         <div className='my-2 w-full h-full max-w-small mx-auto'>
-//             <div className='flex items-center justify-between'>
-//                 <div className='flex items-center gap-2'>
-//                     <Avatar>
-//                         <AvatarImage src={post.author?.profilePicture} alt="post_image" />
-//                         <AvatarFallback>CN</AvatarFallback>
-//                     </Avatar>
-//                     <h6>{post.author?.username}</h6>
-//                 </div>
-//                 <Dialog>
-//                     <DialogTrigger asChild>
-//                         <MoreHorizontal className="cursor-pointer" />
-//                     </DialogTrigger>
-//                     <DialogContent className='flex flex-col bg-[#F3F3E0] items-center text-sm text-center'>
-//                         <button variant='ghost' className='cursor-pointer w-fit text-[#FAB12F] font-bold'>Unfollow</button>
-//                         <button variant='ghost' className='cursor-pointer w-fit text-[#CBDCEB]'>Add to favourites</button>
-//                         {
-//                             user && user?._id === post?.author._id && <button variant='ghost' className="cursor-pointer w-fit">Delete</button>
-//                         }
-//                         {/* <button variant='ghost' className="cursor-pointer w-fit">Delete</button> */}
-//                     </DialogContent>
-//                 </Dialog>
-//             </div>
-
-//             {/* Post Image */}
-//             <img
-//                 className='rounded-sm my-2 w-full aspect-[3/2] object-cover'
-//                 src={post.image}
-//                 alt='post_image'
-//             />
-
-//             {/* Post Actions */}
-//             <div className='flex items-center justify-between my-2'>
-//                 <div className='flex items-center gap-3'>
-//                     <FiHeart size={'22px'} />
-//                     <FiMessageCircle size={'22px'} onClick={() => setOpen(true)} className='cursor-pointer hover:text-gray-600' />
-//                     <FiSend size={'22px'} className='cursor-pointer hover:text-gray-600' />
-//                 </div>
-//                 <FiBookmark size={'22px'} className='cursor-pointer hover:text-gray-600' />
-//             </div>
-
-//             {/* Post Info */}
-//             <span className='text-start font-medium block mb-2'>{post.likes.length} likes</span>
-//             <p className='text-start'>
-//                 <span className='font-medium mr-2'>{post.author?.username}</span>
-//                 {post.caption}
-//             </p>
-//             <span onClick={() => setOpen(true)} className='text-start cursor-pointer text-sm text-gray-400'>View all 10 comments</span>
-
-//             {/* Comment Dialog */}
-//             <CommentDialog open={open} setOpen={setOpen} />
-
-//             {/* Add Comment */}
-//             <div className='flex items-center justify-between mt-2'>
-//                 <input
-//                     type="text"
-//                     placeholder='Add a comment...'
-//                     value={text}
-//                     onChange={changeEventHandler}
-//                     className='bg-[#F9F7F7] text-black outline-none text-sm w-full'
-//                 />
-//                 {text && <span className='text-[#3F72AF] cursor-pointer'>Post</span>}
-//             </div>
-//         </div>
-//     );
-// };
-
-// export default Post;
-
 import React, { useState } from 'react';
 import axios from 'axios'; // Import axios
 import { toast } from 'react-toastify'; // Import toast for notifications
@@ -119,8 +12,10 @@ import {
     DialogTrigger,
 } from './ui/dialog';
 import CommentDialog from './CommentDialog';
-import { setPosts } from '../redux/postSlice'; // Import the Redux action
+import { setPosts, setSelectedPost } from '../redux/postSlice'; // Import the Redux action
 import { FaRegHeart, FaHeart } from 'react-icons/fa';
+//import { Badge } from './ui/Badge'
+
 
 
 const Post = ({ post }) => {
@@ -137,6 +32,7 @@ const Post = ({ post }) => {
     const dispatch = useDispatch();
     const [liked, setLiked] = useState(post.likes.includes(user?._id) || false);
     const [postLike, setPostLike] = useState(post.likes.length);
+    const [comment, setComment] = useState(post.comments);
 
     const handleCommentInput = (e) => {
         const inputText = e.target.value;
@@ -166,9 +62,37 @@ const Post = ({ post }) => {
             console.log(error);
         }
     }
-    
-    
-    
+
+    const commentHandler = async () => {
+
+        try {
+            const res = await axios.post(`http://localhost:8000/api/v1/post/${post._id}/comment`, { text }, {
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                withCredentials: true
+            });
+            console.log(res.data);
+            if (res.data.success) {
+                const updatedCommentData = [...comment, res.data.comment];
+                setComment(updatedCommentData);
+
+                const updatedPostData = posts.map(p =>
+                    p._id === post._id ? { ...p, comments: updatedCommentData } : p
+                );
+
+                dispatch(setPosts(updatedPostData));
+                toast.success(res.data.message);
+                setText("");
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+
+
+
 
     const deletePostHandler = async () => {
         try {
@@ -206,6 +130,7 @@ const Post = ({ post }) => {
                         <AvatarFallback>{post.author?.username?.[0]?.toUpperCase() || 'U'}</AvatarFallback>
                     </Avatar>
                     <h6>{post.author?.username || 'Unknown User'}</h6>
+
                 </div>
                 <Dialog>
                     <DialogTrigger asChild>
@@ -248,7 +173,10 @@ const Post = ({ post }) => {
                     }
                     <FiMessageCircle
                         size="22px"
-                        onClick={() => setOpen(true)}
+                        onClick={() => {
+                            dispatch(setSelectedPost(post));
+                            setOpen(true);
+                        }}
                         className="cursor-pointer hover:text-gray-600"
                     />
                     <FiSend size="22px" className="cursor-pointer hover:text-gray-600" />
@@ -262,12 +190,21 @@ const Post = ({ post }) => {
                 <span className="font-medium mr-2">{post.author?.username || 'Unknown User'}</span>
                 {post.caption || ''}
             </p>
-            <span
-                onClick={() => setOpen(true)}
-                className="text-start cursor-pointer text-sm text-gray-400"
-            >
-                View all {post.comments?.length || 0} comments
-            </span>
+            {
+                comment.length > 0 && (
+                    <span
+                        onClick={() => {
+                            dispatch(setSelectedPost(post));
+                            setOpen(true);
+                        }}
+                        className="text-start cursor-pointer text-sm text-gray-400"
+                    >
+                        View all {post.comments?.length || 0} comments
+                    </span>
+
+                )
+            }
+
 
             {/* Comment Dialog */}
             <CommentDialog open={open} setOpen={setOpen} />
@@ -281,10 +218,12 @@ const Post = ({ post }) => {
                     onChange={handleCommentInput}
                     className="bg-[#F9F7F7] text-black outline-none text-sm w-full"
                 />
-                {text && <span className="text-[#3F72AF] cursor-pointer">Post</span>}
+                {text && <span onClick={commentHandler} className="text-[#3F72AF] cursor-pointer">Post</span>}
             </div>
         </div>
     );
 };
 
 export default Post;
+
+
