@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
 import useGetUserProfile from '../hooks/useGetUserProfile';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import store from '../redux/store';
 import Button from '../componen/ui/button'
 import { Badge } from './ui/badge';
-import { AtSign } from 'lucide-react';
+import { AtSign, Heart, MessageCircle } from 'lucide-react';
 import { use } from 'react';
 
 const Profile = () => {
@@ -15,8 +15,8 @@ const Profile = () => {
   useGetUserProfile(userId);
   const [activeTab,setActiveTab]=useState('posts');
 
-  const { userProfile } = useSelector(store => store.auth);
-  const isLoggedInUserProfile = true;
+  const { userProfile ,user} = useSelector(store => store.auth);
+  const isLoggedInUserProfile = user?._id === userProfile?._id;
   const isFollowing= false;
 
   const handleTabChange=(tab)=>{
@@ -42,7 +42,7 @@ const Profile = () => {
                 {
                   isLoggedInUserProfile ?(
                     <>
-                  <Button variant='secondary' className='bg-[#CBDCEB] text-gray-700 hover:[#DBE2EF]h-8 px-3 rounded-xl shadow-sm transition-all duration-150 mr-1'> Edit profile</Button>
+                  <Link to="/account/edit"><Button variant='secondary' className='bg-[#CBDCEB] text-gray-700 hover:[#DBE2EF]h-8 px-3 rounded-xl shadow-sm transition-all duration-150 mr-1'> Edit profile</Button></Link>
                   <Button variant='secondary' className='bg-[#CBDCEB] text-gray-700 hover:[#DBE2EF]h-8 px-3 rounded-xl shadow-sm transition-all duration-150 mr-1'> View archive</Button>
                   <Button variant='secondary' className='bg-[#CBDCEB] text-gray-700 hover:[#DBE2EF]h-8 px-3 rounded-xl shadow-sm transition-all duration-150 mr-1'> Ad tools</Button>
                 </>
@@ -88,6 +88,18 @@ const Profile = () => {
                   return(
                     <div key={post?._id} className='relative group cursor-pointer'>
                       <img src={post.image} alt='postimage' className='rounded-sm my-2 aspect-square object-cover'/>
+                      <div className='absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300'>
+                        <div className='flex items-center text-white space-x-4'>
+                          <Button variant="transparent" className='flex item-center gap-2 bg-[#D1D5DB]hover:text-gray-300 focus:outline-none'>
+                            <Heart/>
+                            <span>{post?.likes.length}</span>
+                          </Button>
+                          <Button variant="transparent" className='flex item-center gap-2 hover:text-gray-300 focus:outline-none'>
+                            <MessageCircle/>
+                            <span>{post?.comments.length}</span>
+                          </Button>
+                        </div>
+                      </div>
                       </div>
                   )
                 })

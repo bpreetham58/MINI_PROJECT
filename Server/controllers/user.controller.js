@@ -132,11 +132,11 @@ export const editProfile =async (req,res)=>{
     try{
         const userId=req.id;
         const {bio, gender}=req.body;
-        const ProfilePicture=req.file;
+        const ProfilePhoto=req.file;
 
         let cloudResponse;
-        if (ProfilePicture) {
-            const fileUri = getDataUri(ProfilePicture);
+        if (ProfilePhoto) {
+            const fileUri = getDataUri(ProfilePhoto);
             cloudResponse = await cloudinary.uploader.upload(fileUri);
             console.log('Cloudinary upload response:', cloudResponse);
         }        
@@ -151,7 +151,7 @@ export const editProfile =async (req,res)=>{
 
         if(bio) user.bio=bio;
         if(gender) user.gender=gender;
-        if (ProfilePicture) user.ProfilePicture = cloudResponse.secure_url;
+        if (ProfilePhoto) user.ProfilePicture = cloudResponse.secure_url;
         console.log('User profile picture URL:', user.ProfilePicture);
 
         await user.save();

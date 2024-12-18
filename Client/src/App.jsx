@@ -17,6 +17,8 @@ import Profile from "./componen/Profile";
 import CertificateGenerator from './componen/CertificateGenerator';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'; 
+import EditProfile from "./componen/EditProfile";
+import ChatPage from "./componen/ChatPage";
 
 const browserRouter=createBrowserRouter([
   {
@@ -35,6 +37,14 @@ const browserRouter=createBrowserRouter([
         path: "/certificate",
         element: <CertificateGenerator />, 
       },
+      {
+        path: "/account/edit",
+        element: <EditProfile />, 
+      },
+      {
+        path:'/chat',
+        element:<ChatPage/>
+      }
     ]
   },
   {
