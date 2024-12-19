@@ -6,11 +6,12 @@ import { Input } from './ui/input';
 import Button from './ui/button';
 import { MessageCircleCode } from 'lucide-react';
 import Message from './Message';
+import store from '../redux/store';
 
 
 const ChatPage = () => {
     const {user,suggestedUsers,selectedUser} =useSelector(store=>store.auth);
-    const isOnline = false;
+    const {onlineUsers}=useSelector(store=>store.chat);
     const dispatch = useDispatch();
 
   return (
@@ -20,7 +21,8 @@ const ChatPage = () => {
         <hr className='mb-4 border-gray-300'/>
         <div className='overflow-y-auto h-[80vh]'>
             {
-                suggestedUsers.map((suggestedUser)=>{        
+                suggestedUsers.map((suggestedUser)=>{   
+                    const isOnline= onlineUsers.includes(suggestedUser?._id);
                     return(
                         <div onClick={()=>dispatch(setSelectedUser(suggestedUser))}className='flex gap-3 items-center p-3 hover:bg-[#DBE2EF] cursor-pointer'>
                             <Avatar className='w-14 h-14'>
