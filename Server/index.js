@@ -35,7 +35,9 @@ app.use("/api/v1/post",postRoute);
 app.use("/api/v1/message",messageRoute);
 //"http://localhost:8000/api/v1/user/register"
 
-server.listen(PORT,()=>{
-    connectDB();
-    console.log(`Server listen at port ${PORT}`);
-})
+// server.listen(PORT,()=>{
+connectDB();
+//     console.log(`Server listen at port ${PORT}`);
+// })
+
+
